@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
 
-	"github.com/LazarenkoA/prometheus_1C_exporter/explorers/mock"
+	mock_model "github.com/LazarenkoA/prometheus_1C_exporter/explorers/mock"
 	"github.com/LazarenkoA/prometheus_1C_exporter/logger"
 	"github.com/LazarenkoA/prometheus_1C_exporter/settings"
 )
@@ -60,14 +60,23 @@ func initests(t *testing.T) []struct {
 		},
 	}).AnyTimes()
 
+	s.EXPECT().GetProperty("ClientLic", "metricName", gomock.Any()).Return("ClientLic").AnyTimes()
 	s.EXPECT().GetProperty("ClientLic", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("AvailablePerformance", "metricName", gomock.Any()).Return("AvailablePerformance").AnyTimes()
 	s.EXPECT().GetProperty("AvailablePerformance", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("CPU", "metricName", gomock.Any()).Return("CPU").AnyTimes()
 	s.EXPECT().GetProperty("CPU", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("disk", "metricName", gomock.Any()).Return("disk").AnyTimes()
 	s.EXPECT().GetProperty("disk", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("Connect", "metricName", gomock.Any()).Return("Connect").AnyTimes()
 	s.EXPECT().GetProperty("Connect", "timerNotify", gomock.Any()).Return(1).AnyTimes()
+	s.EXPECT().GetProperty("SessionsData", "metricName", gomock.Any()).Return("SessionsData").AnyTimes()
 	s.EXPECT().GetProperty("SessionsData", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("ProcData", "metricName", gomock.Any()).Return("ProcData").AnyTimes()
 	s.EXPECT().GetProperty("ProcData", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("Session", "metricName", gomock.Any()).Return("Session").AnyTimes()
 	s.EXPECT().GetProperty("Session", "timerNotify", gomock.Any()).Return(10).AnyTimes()
+	s.EXPECT().GetProperty("SheduleJob", "metricName", gomock.Any()).Return("SheduleJob").AnyTimes()
 	s.EXPECT().GetProperty("SheduleJob", "timerNotify", gomock.Any()).Return(1).AnyTimes()
 
 	metric := new(Metrics).Construct(s)
