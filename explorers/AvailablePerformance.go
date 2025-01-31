@@ -152,6 +152,11 @@ func (exp *ExplorerAvailablePerformance) getData() (result []map[string]interfac
 			tmp["avgservercalltime"] = avgservercalltime
 		}
 
+		// объем памяти, занимаемый рабочим процессом
+		if memorysize, err := strconv.ParseFloat(item["memory-size"], 64); err == nil {
+			tmp["memorysize"] = memorysize
+		}
+
 		for k, v := range tmp {
 			result = append(result, map[string]interface{}{
 				"host":    item["host"],
