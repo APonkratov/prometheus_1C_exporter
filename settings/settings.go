@@ -41,6 +41,14 @@ type Settings struct {
 		Pass  string `yaml:"Pass"`
 	} `yaml:"RAC"`
 
+	Pushgateway *struct {
+		Enable        bool   `yaml:"Enable"`
+		URL           string `yaml:"URL"`
+		Interval      int    `yaml:"Interval"`
+		GroupingLabel string `yaml:"GroupingLabel"`
+		GroupingValue string `yaml:"GroupingValue"`
+	} `yaml:"Pushgateway"`
+
 	mx *sync.RWMutex `yaml:"-"`
 	// login, pass string        `yaml:"-"`
 	bases []Bases `yaml:"-"`
