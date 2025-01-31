@@ -129,6 +129,12 @@ func Test_GetProperty(t *testing.T) {
 		delay = reflect.ValueOf(s.GetProperty("ClientLic", "timerNotify", 10)).Int()
 		assert.Equal(t, 60, int(delay))
 
+		metricName := reflect.ValueOf(s.GetProperty("SessionsData", "metricName", "SessionsData")).String()
+		assert.Equal(t, "ones_cluster_metrics_sessions_data", metricName)
+
+		metricName = reflect.ValueOf(s.GetProperty("ClientLic", "metricName", "")).String()
+		assert.Equal(t, "", metricName)
+
 		assert.Equal(t, 9, len(s.Explorers))
 		assert.NotNil(t, s.DBCredentials)
 		assert.NotNil(t, s.RAC)
@@ -171,6 +177,7 @@ func getSettings() string {
       timerNotify: 60
   - Name: SessionsData
     Property:
+      metricName: ones_cluster_metrics_sessions_data
       timerNotify: 10
   - Name: ProcData
     Property:

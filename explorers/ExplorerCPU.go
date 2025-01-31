@@ -3,6 +3,7 @@ package explorer
 import (
 	"os"
 	"reflect"
+
 	// "os"
 	"time"
 
@@ -24,7 +25,7 @@ func (exp *CPU) Construct(s model.Isettings, cerror chan error) *CPU {
 
 	exp.summary = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
-			Name:       exp.GetName(),
+			Name:       reflect.ValueOf(s.GetProperty(exp.GetName(), "metricName", exp.GetName())).String(),
 			Help:       "Метрики CPU",
 			Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 		},

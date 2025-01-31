@@ -29,7 +29,7 @@ func (exp *ExplorerCheckSheduleJob) Construct(s model.Isettings, cerror chan err
 
 	exp.gauge = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: exp.GetName(),
+			Name: reflect.ValueOf(s.GetProperty(exp.GetName(), "metricName", exp.GetName())).String(),
 			Help: "Состояние галки \"блокировка регламентных заданий\", если галка установлена значение будет 1 иначе 0 или метрика будет отсутствовать",
 		},
 		[]string{"base"},

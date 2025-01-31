@@ -25,7 +25,7 @@ func (exp *ExplorerSessionsMemory) Construct(s model.Isettings, cerror chan erro
 
 	exp.summary = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
-			Name:       exp.GetName(),
+			Name:       reflect.ValueOf(s.GetProperty(exp.GetName(), "metricName", exp.GetName())).String(),
 			Help:       "Показатели из кластера 1С",
 			Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 		},

@@ -15,27 +15,35 @@ Explorers:
   - Name: ClientLic
     Property:
       timerNotify: 60
+      metricName: ones_cluster_metrics_client_lic
   - Name: AvailablePerformance
     Property:
       timerNotify: 10
+      metricName: ones_cluster_metrics_available_performance
   - Name: CPU
     Property:
       timerNotify: 10
+      metricName: ones_cluster_metrics_cpu
   - Name: disk
     Property:
       timerNotify: 10
+      metricName: ones_cluster_metrics_disk
   - Name: SheduleJob
     Property:
       timerNotify: 10
+      metricName: ones_cluster_metrics_shedule_job
   - Name: Session
     Property:
       timerNotify: 60
+      metricName: ones_cluster_metrics_sessions
   - Name: Connect
     Property:
       timerNotify: 60
+      metricName: ones_cluster_metrics_connects
   - Name: SessionsData
     Property:
       timerNotify: 10
+      metricName: ones_cluster_metrics_sessions_data
   - Name: ProcData
     Property:
       processes:
@@ -43,6 +51,7 @@ Explorers:
         - ragent
         - rmngr
       timerNotify: 10
+      metricName: ones_cluster_metrics_process_data
 
 # http сервис который возвращает массив json с кредами к БД
 # нужно для метрики SheduleJob

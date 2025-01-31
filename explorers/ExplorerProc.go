@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
 	// "os"
 	"time"
 
@@ -25,7 +26,7 @@ func (exp *ExplorerProc) Construct(s model.Isettings, cerror chan error) *Explor
 
 	exp.summary = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
-			Name:       exp.GetName(),
+			Name:       reflect.ValueOf(s.GetProperty(exp.GetName(), "metricName", exp.GetName())).String(),
 			Help:       "Память процессов",
 			Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 		},
