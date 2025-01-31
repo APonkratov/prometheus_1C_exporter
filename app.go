@@ -16,7 +16,10 @@ import (
 	"github.com/LazarenkoA/prometheus_1C_exporter/logger"
 	"github.com/LazarenkoA/prometheus_1C_exporter/settings"
 	"github.com/judwhite/go-svc"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/client_golang/prometheus/push"
+	"github.com/prometheus/common/expfmt"
 )
 
 type app struct {
@@ -25,6 +28,15 @@ type app struct {
 	errors   chan error
 	httpSrv  *http.Server
 	port     string
+	pushGW   *PushGatewayService
+}
+
+type PushGatewayService struct {
+	interval      time.Duration
+	url           string
+	registry      *prometheus.Registry
+	groupingLabel string
+	groupingValue string
 }
 
 func (a *app) Init(env svc.Environment) (err error) {
@@ -40,6 +52,16 @@ func (a *app) Init(env svc.Environment) (err error) {
 	a.metric.Append(new(exp.ExplorerProc).Construct(a.settings, a.errors))                 // текущая память поцесса
 	a.metric.Append(new(exp.CPU).Construct(a.settings, a.errors))                          // CPU
 	a.metric.Append(new(exp.ExplorerDisk).Construct(a.settings, a.errors))                 // Диск
+
+	if a.settings.Pushgateway.Enable {
+		a.pushGW = NewPushGatewayService(
+			time.Duration(a.settings.Pushgateway.Interval)*time.Second,
+			a.settings.Pushgateway.URL,
+			prometheus.DefaultRegisterer.(*prometheus.Registry),
+			a.settings.Pushgateway.GroupingLabel,
+			a.settings.Pushgateway.GroupingValue,
+		)
+	}
 
 	a.initHTTP()
 
@@ -64,6 +86,8 @@ func (a *app) Start() error {
 	}()
 
 	a.metricsRun()
+
+	go a.pushGW.Start()
 
 	return nil
 }
@@ -126,6 +150,29 @@ func (a *app) metricsRun() {
 			go ex.Start(ex)
 		} else {
 			logger.DefaultLogger.Debugf("Метрика %s пропущена", ex.GetName())
+		}
+	}
+}
+
+func NewPushGatewayService(interval time.Duration, url string, registry *prometheus.Registry, groupingLabel string, groupingValue string) *PushGatewayService {
+	return &PushGatewayService{
+		interval:      interval,
+		url:           url,
+		registry:      registry,
+		groupingLabel: groupingLabel,
+		groupingValue: groupingValue,
+	}
+}
+
+func (p *PushGatewayService) Start() {
+	ticker := time.NewTicker(p.interval)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		if err := push.New(p.url, "1s").Gatherer(p.registry).Grouping(p.groupingLabel, p.groupingValue).Format(expfmt.FmtOpenMetrics).Push(); err != nil {
+			logger.DefaultLogger.Errorf("Ошибка отправки метрик в Pushgateway: %v", err)
+		} else {
+			logger.DefaultLogger.Info("Метрики успешно отправлены в Pushgateway")
 		}
 	}
 }
